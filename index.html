@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Donation Website</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    a{
+      color:white;
+      
+      text-decoration: none;
+      
+    }
+  </style>
+</head>
+<body>
+     <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="#">BLOOD BOND</a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#donate">Donate</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="menu-icon" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section id="home" class="home">
+    <div class="overlay">
+      <h2>Save Lives, Donate Blood Today</h2>
+      <p>Your donation can make a difference in someone's life. Join us and become a hero!</p>
+      <button><a href="#donate">Donate Now</a></button>
+    </div>
+  </section>
+
+<!-- Donate Section -->
+<div id="donate" class="donate">
+  <h2>Donate Blood</h2>
+  <div class="donate-form">
+    <form action="submit_donation.php" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" placeholder="Enter your age" required min="18" max="65">
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}">
+
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="" disabled selected>Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="bloodGroup">Blood Group:</label>
+      <select id="bloodGroup" name="bloodGroup" required>
+        <option value="" disabled selected>Select Blood Group</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+      </select>
+
+      <label for="state">State:</label>
+      <select id="state" name="state" onchange="updateCityOptions('city', this.value)" required>
+        <option value="" disabled selected>Select State</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Maharashtra">Maharashtra</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Gujarat">Gujarat</option>
+        <option value="Rajasthan">Rajasthan</option>
+        <option value="Uttar Pradesh">Uttar Pradesh</option>
+        <option value="West Bengal">West Bengal</option>
+        <option value="Punjab">Punjab</option>
+        <option value="Haryana">Haryana</option>
+        <option value="Kerala">Kerala</option>
+        <option value="Madhya Pradesh">Madhya Pradesh</option>
+        <option value="Bihar">Bihar</option>
+        <option value="Telangana">Telangana</option>
+        <option value="Andhra Pradesh">Andhra Pradesh</option>
+        <option value="Odisha">Odisha</option>
+        <option value="Assam">Assam</option>
+        <option value="Jharkhand">Jharkhand</option>
+        <option value="Chhattisgarh">Chhattisgarh</option>
+        <option value="Uttarakhand">Uttarakhand</option>
+        <option value="Goa">Goa</option>
+        <option value="Himachal Pradesh">Himachal Pradesh</option>
+        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+        <option value="Meghalaya">Meghalaya</option>
+        <option value="Tripura">Tripura</option>
+        <option value="Nagaland">Nagaland</option>
+        <option value="Mizoram">Mizoram</option>
+        <option value="Manipur">Manipur</option>
+        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+        <option value="Sikkim">Sikkim</option>
+      </select>
+
+      <label for="city">City:</label>
+      <select id="city" name="city" required>
+        <option value="" disabled selected>Select City</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- Search Section -->
+
+<div id="search" class="search">
+  <h2>Search Donors</h2>
+  <p>Select blood group, state, and city to find available donors.</p>
+ 
+ <form action="search.php" method="POST" class="search-bar">
+    <select class="search-dropdown" id="searchBloodGroup" name="searchBloodGroup">
+      <option value="" disabled selected>Select Blood Group</option>
+      <option value="A+">A+</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B-">B-</option>
+      <option value="O+">O+</option>
+      <option value="O-">O-</option>
+      <option value="AB+">AB+</option>
+      <option value="AB-">AB-</option>
+    </select>
+
+    <select class="search-dropdown" id="searchState" name="searchState" onchange="updateCityOptions('searchCity', this.value)">
+      <option value="" disabled selected>Select State</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Gujarat">Gujarat</option>
+      <option value="Rajasthan">Rajasthan</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="West Bengal">West Bengal</option>
+      <option value="Punjab">Punjab</option>
+      <option value="Haryana">Haryana</option>
+      <option value="Kerala">Kerala</option>
+      <option value="Madhya Pradesh">Madhya Pradesh</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Telangana">Telangana</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Odisha">Odisha</option>
+      <option value="Assam">Assam</option>
+      <option value="Jharkhand">Jharkhand</option>
+      <option value="Chhattisgarh">Chhattisgarh</option>
+      <option value="Uttarakhand">Uttarakhand</option>
+      <option value="Goa">Goa</option>
+      <option value="Himachal Pradesh">Himachal Pradesh</option>
+      <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+      <option value="Meghalaya">Meghalaya</option>
+      <option value="Tripura">Tripura</option>
+      <option value="Nagaland">Nagaland</option>
+      <option value="Mizoram">Mizoram</option>
+      <option value="Manipur">Manipur</option>
+      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+      <option value="Sikkim">Sikkim</option>
+    </select>
+
+    <select class="search-dropdown" id="searchCity" name="searchCity">
+      <option value=""disabled selected>Select City</option>
+    </select>
+
+    <button id="searchButton" name="searchDonors" onclick="searchDonors()">Search</button>
+
+    </form>
+ </div>
+
+ 
+  <!-- About Us Section -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <h2>About Us</h2>
+      <p class="about-description">
+        Our mission at <b>Blood Donation</b> is to save lives by connecting donors with people in need.
+      </p>
+      <div class="about-stats">
+        <div class="stat-box">
+          <h3>500+</h3>
+          <p>Donors Registered</p>
+        </div>
+        <div class="stat-box">
+          <h3>200+</h3>
+          <p>Successful Donations</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <p><strong>Phone:</strong> +91-9876543210</p>
+    <p><strong>Email:</strong> blooddonation.com</p>
+    <p><strong>Address:</strong>Mohan Babu University, Sree sainath nagar, Tirupati,517102</p>
+  </section>
+
+  
+
+  <!-- Link to the external JavaScript file -->
+  <script src="script.js"></script>
+
+</body>
+</html>         
