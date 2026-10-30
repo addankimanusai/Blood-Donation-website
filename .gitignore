@@ -1,0 +1,15 @@
+# Local or production credentials
+includes/config.local.php
+.env
+.env.*
+!.env.example
+
+# Logs and generated files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/

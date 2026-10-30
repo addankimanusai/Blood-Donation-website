@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Blood Bond</title>
+    <link rel="stylesheet" href="../styles.css?v=20260814">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="../index.html" class="logo" aria-label="Blood Bond home"><span class="brand-mark" aria-hidden="true">+</span><span>BLOOD BOND</span></a>
+            <div class="navbar-actions">
+                <a href="dashboard.html" class="btn">Dashboard</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="booking-container">
+        <h2>Book Appointment</h2>
+        <div id="messageContainer"></div>
+
+        <div class="booking-form">
+            <form id="appointmentForm">
+                <label for="appointment_date">Select Date</label>
+                <input type="date" id="appointment_date" name="appointment_date" required min="">
+
+                <label for="location">Location</label>
+                <select id="location" name="location" required>
+                    <option value="">Select Location</option>
+                    <option value="Main Blood Bank">Main Blood Bank</option>
+                    <option value="City Hospital">City Hospital</option>
+                    <option value="Community Center">Community Center</option>
+                </select>
+
+                <label>Available Time Slots</label>
+                <div id="timeSlots" class="time-slots">
+                    <p style="color: var(--text-secondary);">Select a date to see available slots</p>
+                </div>
+                <input type="hidden" id="appointment_time" name="appointment_time" required>
+
+                <button type="submit" id="submitBtn">Book Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        const dateInput = document.getElementById('appointment_date');
+        const timeSlotsContainer = document.getElementById('timeSlots');
+        const timeInput = document.getElementById('appointment_time');
+
+        // Set minimum date to today
+        dateInput.min = new Date().toISOString().split('T')[0];
+
+        dateInput.addEventListener('change', async function() {
+            const date = this.value;
+            if (!date) return;
+
+            try {
+                const response = await fetch(`../api/time-slots.php?date=${date}`);
+                const result = await response.json();
+
+                if (result.success && result.data.length > 0) {
+                    renderTimeSlots(result.data);
+                } else {
+                    timeSlotsContainer.innerHTML = '<p style="color: var(--text-secondary);">No slots available for this date</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load time slots', error);
+            }
+        });
+
+        function renderTimeSlots(slots) {
+            timeSlotsContainer.innerHTML = '';
+            slots.forEach(slot => {
+                const div = document.createElement('div');
+                div.className = 'time-slot';
+                div.textContent = slot.time.substring(0, 5);
+                div.dataset.time = slot.time;
+
+                if (slot.available <= 0) {
+                    div.classList.add('unavailable');
+                } else {
+                    div.addEventListener('click', function() {
+                        document.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
+                        div.classList.add('selected');
+                        timeInput.value = slot.time;
+                    });
+                }
+
+                timeSlotsContainer.appendChild(div);
+            });
+        }
+
+        document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!timeInput.value) {
+                showMessage('Please select a time slot', 'error');
+                return;
+            }
+
+            const user = localStorage.getItem('user');
+            if (!user) {
+                showMessage('Please login first', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Booking...';
+
+            try {
+                const response = await fetch('../api/appointments.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        appointment_date: dateInput.value,
+                        appointment_time: timeInput.value,
+                        location: document.getElementById('location').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Appointment booked successfully!', 'success');
+                    setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = 'Book Appointment';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Inventory - Blood Bond</title>
+    <link rel="stylesheet" href="../styles.css?v=20260814">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="../index.html" class="logo" aria-label="Blood Bond home"><span class="brand-mark" aria-hidden="true">+</span><span>BLOOD BOND</span></a>
+            <div class="navbar-actions">
+                <button id="darkModeBtn" class="dark-mode-btn" onclick="toggleDarkMode()">Dark Mode</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="inventory-container">
+        <div class="inventory-header">
+            <h2>Blood Inventory Status</h2>
+            <p class="last-updated">Last updated: <span id="lastUpdated">-</span></p>
+        </div>
+
+        <div id="inventoryGrid" class="inventory-grid">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        async function loadInventory() {
+            try {
+                const response = await fetch('../api/inventory.php');
+                const result = await response.json();
+
+                if (result.success) {
+                    renderInventory(result.data);
+                } else {
+                    document.getElementById('inventoryGrid').innerHTML =
+                        '<p style="text-align:center;color:var(--error-color);">Failed to load inventory</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load inventory', error);
+                document.getElementById('inventoryGrid').innerHTML =
+                    '<p style="text-align:center;color:var(--error-color);">Network error</p>';
+            }
+        }
+
+        function renderInventory(inventory) {
+            const grid = document.getElementById('inventoryGrid');
+            grid.innerHTML = '';
+
+            let lastUpdate = '';
+
+            inventory.forEach(item => {
+                const statusClass = item.units < 10 ? 'low' : 'ok';
+                const statusLabel = item.units < 10 ? 'Low Stock' : 'In Stock';
+                const percentage = Math.min(100, (item.units / 50) * 100);
+
+                if (!lastUpdate && item.last_updated) {
+                    lastUpdate = new Date(item.last_updated).toLocaleString();
+                }
+
+                const card = document.createElement('div');
+                card.className = 'inventory-card';
+                card.innerHTML = `
+                    <div class="blood-type">${item.blood_type}</div>
+                    <div class="units ${statusClass}">${item.units}</div>
+                    <div class="status-label">${statusLabel}</div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill ${statusClass}" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            if (lastUpdate) {
+                document.getElementById('lastUpdated').textContent = lastUpdate;
+            }
+        }
+
+        // Auto-refresh every 60 seconds
+        loadInventory();
+        setInterval(loadInventory, 60000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Blood Bond</title>
+    <link rel="stylesheet" href="../styles.css?v=20260814">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="../index.html" class="logo" aria-label="Blood Bond home"><span class="brand-mark" aria-hidden="true">+</span><span>BLOOD BOND</span></a>
+            <div class="navbar-actions">
+                <button id="darkModeBtn" class="dark-mode-btn" onclick="toggleDarkMode()">Dark Mode</button>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Welcome to Your Dashboard</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number" id="donationCount">0</div>
+                <div class="label">Total Donations</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="appointmentCount">0</div>
+                <div class="label">Appointments</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="eligibilityStatus">-</div>
+                <div class="label">Eligibility Status</div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Your Profile</h3>
+            <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+            <p><strong>Role:</strong> <span id="userRole">-</span></p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Quick Actions</h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="appointments.html" class="btn">Book Appointment</a>
+                <a href="inventory.html" class="btn">View Inventory</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        function checkAuth() {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+            return JSON.parse(user);
+        }
+
+        function renderDashboard() {
+            const user = checkAuth();
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userRole').textContent = user.role;
+        }
+
+        async function logout() {
+            try {
+                await fetch('../api/logout.php', { method: 'POST' });
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout failed', error);
+            }
+        }
+
+        renderDashboard();
+    </script>
+</body>
+</html>
