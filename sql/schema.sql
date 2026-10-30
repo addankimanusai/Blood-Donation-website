@@ -1,13 +1,8 @@
 -- =============================================
 -- Blood Donation Website Database Schema
--- Self-contained schema for local XAMPP setup
+-- Import this file after selecting your database in phpMyAdmin.
+-- For local XAMPP, create the donorsdatabase database first.
 -- =============================================
-
-CREATE DATABASE IF NOT EXISTS donorsdatabase
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE donorsdatabase;
 
 -- =============================================
 -- Donors

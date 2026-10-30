@@ -24,7 +24,7 @@ Blood Bond is a PHP and MySQL web application for donor registration, donor sear
 ## Run locally with XAMPP
 
 1. Start **Apache** and **MySQL** in the XAMPP Control Panel.
-2. Import `sql/schema.sql` through phpMyAdmin.
+2. Create a database named `donorsdatabase`, select it in phpMyAdmin, then import `sql/schema.sql`.
 3. Open `http://localhost/Blood%20Donation%20Website/`.
 
 ## Deploy to a PHP + MySQL host
